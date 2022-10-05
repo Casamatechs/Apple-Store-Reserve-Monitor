@@ -101,20 +101,22 @@ class StoreChecker:
                 )
             )
             for part_id, part in store.get("parts").items():
-                if part.get("storeSelectionEnabled") is True:
+                if part.get("pickupDisplay") == 'available':
                     stock_available = True
                     print(
-                        " - {} {} ({})".format(
+                        " - {} {} ({} | {})".format(
                             crayons.green("✔"),
-                            crayons.green(part.get("storePickupProductTitle")),
+                            crayons.green("Stock available"),
+                            crayons.green(part.get("messageTypes").get("regular").get("storePickupProductTitle")),
                             crayons.green(part.get("partNumber")),
                         )
                     )
                 else:
                     print(
-                        " - {} {} ({})".format(
+                        " - {} {} ({} | {})".format(
                             crayons.red("✖"),
-                            crayons.red(part.get("storePickupProductTitle")),
+                            crayons.red("No stock available"),
+                            crayons.red(part.get("messageTypes").get("regular").get("storePickupProductTitle")),
                             crayons.red(part.get("partNumber")),
                         )
                     )
@@ -180,6 +182,11 @@ class StoreChecker:
     def check_stores_for_device(self, device):
         """Find all stores that have the device requested available (does not matter if it's in stock or not)."""
         product_availability_response = requests.get(
+            self.PRODUCT_AVAILABILITY_URL.format(self.base_url, device.get("model"), self.configuration.zip_code)
+        )
+        while (product_availability_response.status_code == 503):
+            # Sometimes the service returns a 503 error code. Just have to keep trying.
+            product_availability_response = requests.get(
             self.PRODUCT_AVAILABILITY_URL.format(self.base_url, device.get("model"), self.configuration.zip_code)
         )
         store_list = product_availability_response.json().get("body").get("stores")

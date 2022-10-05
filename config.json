@@ -1,9 +1,5 @@
 {
-  "country_code": "de",
-  "device_family": "iphone_12_mini",
-  "zip_code": "10369",
-  "models": ["MGJ53ZD/A"],
-  "carriers": ["TMOBILE/US", "SPRINT/US", "ATT/US"],
-  "stores": ["R462"],
-  "appointment_stores": ["R358", "R462"]
+  "country_code": "kr",
+  "device_family": "iphone14pro",
+  "zip_code": "05550"
 }
